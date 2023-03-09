@@ -1,0 +1,23 @@
+.grid {
+  border: 1px solid rgb(17, 17, 17);
+  width: 480px;
+  height: 300px;
+  border: 1px solid rgb(17, 17, 17);
+  margin: 15px;
+}
+
+.robot {
+  position: relative;
+  background-color: black;
+  height: 30px;
+  width: 30px;
+  transition-duration: 0.2s;
+}
+
+.random {
+  position: relative;
+  background-color: rgb(177 73 73);
+  height: 30px;
+  width: 30px;
+  transition-duration: 1s;
+}

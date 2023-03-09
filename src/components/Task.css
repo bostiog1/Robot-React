@@ -1,0 +1,50 @@
+.container {
+  padding: 43px;
+  margin: 2px;
+}
+.title {
+  text-align: center;
+}
+
+.durata {
+  text-align: center;
+}
+
+.sec {
+  width: 13%;
+  font-size: 20px;
+  padding: 8px;
+  top: 2rem;
+  text-align: center;
+  margin-left: 10px;
+}
+
+.delete,
+.start,
+.left,
+.top,
+.right,
+.bottom,
+.refresh {
+  margin-right: 15px;
+  margin-left: 15px;
+  margin: 8px;
+  padding: 8px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  margin: 30px;
+}
+
+.wrong1 {
+  display: block;
+  font-size: 1.17em;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  font-weight: bold;
+}
