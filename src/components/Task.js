@@ -2,11 +2,11 @@ import React, { useEffect, useState, useRef } from "react";
 import Output from "./Output";
 import Grid from "./Grid";
 import { cfg } from "../config";
+import Message from "./Message";
 
 import "./Task.css";
 
 const Task = (props) => {
-
   const { randomPosition, boardHeight, boardWidth, robotWidth } = cfg();
   const [y, x] = randomPosition;
 
@@ -30,16 +30,18 @@ const Task = (props) => {
   };
 
   const handleClick = (param) => () => {
-    if (sec === undefined || sec === "" || sec === null) {
-      setMessage('"Nu ai pus durata!! 😡');
-    } else {
-      setMessage("");
-      // sec = 1 | param = 'stanga' | items = [] | setItems = [...items,[sec,param]] |
-      // setItems = [1,'stanga']
-      // sec = 2 | param = 'dreapta' | items = [1,'stanga'] | setItems = [...items,[sec,param]] |
-      // setItems = [[1,'stanga'], [2,'dreapta']]
-      setItems([...items, [sec, param]]);
-      setSec("");
+    if (!finish.current) {
+      if (sec === undefined || sec === "" || sec === null) {
+        setMessage('"Nu ai pus durata!! 😡');
+      } else {
+        setMessage("");
+        // sec = 1 | param = 'stanga' | items = [] | setItems = [...items,[sec,param]] |
+        // setItems = [1,'stanga']
+        // sec = 2 | param = 'dreapta' | items = [1,'stanga'] | setItems = [...items,[sec,param]] |
+        // setItems = [[1,'stanga'], [2,'dreapta']]
+        setItems([...items, [sec, param]]);
+        setSec("");
+      }
     }
   };
 
@@ -61,19 +63,18 @@ const Task = (props) => {
       finish.current = true;
     }
   };
-  
 
   useEffect(() => {
     gameOver();
 
-    console.log("finish din useEfect: ", finish);
+    // console.log("finish din useEfect: ", finish);
 
     previousInputValue.current = robot;
   }, [robot]);
 
   const handleKeyDown = (event) => {
     if (!finish.current) {
-      console.log("finish din handleKeyDown: ", finish);
+      // console.log("finish din handleKeyDown: ", finish);
       switch (event.code) {
         case "ArrowLeft":
           if (Number(previousInputValue.current.left) > 0) {
@@ -187,6 +188,7 @@ const Task = (props) => {
 
   return (
     <div className="container">
+      <h1 className="title">Robot - React</h1>
       <h1 className="title">Task Manager</h1>
       <div className="durata">
         Durata:
@@ -229,8 +231,8 @@ const Task = (props) => {
         <Output items={items} />
         <Grid robot={robot} random={random} />
       </div>
-      <div className="wrong1">{message}</div>
-      {/* <Message message={message} /> */}
+      {/* <div className="wrong1">{message}</div> */}
+      <Message message={message} finish={finish.current} />
     </div>
   );
 };
