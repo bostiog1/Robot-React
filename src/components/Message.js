@@ -1,7 +1,7 @@
 import "./Message.css";
 
 const Message = ({ message, finish }) => {
-  console.log("finish: ", finish);
+  // console.log("finish: ", finish);
   function refreshPage() {
     window.location.reload(false);
   }

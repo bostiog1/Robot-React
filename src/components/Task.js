@@ -29,7 +29,7 @@ const Task = (props) => {
     setSec(event.target.value);
   };
 
-  const handleClick = (param) => () => {
+  const handleClick = (param) => () => {    
     if (!finish.current) {
       if (sec === undefined || sec === "" || sec === null) {
         setMessage('"Nu ai pus durata!! 😡');
@@ -41,6 +41,7 @@ const Task = (props) => {
         // setItems = [[1,'stanga'], [2,'dreapta']]
         setItems([...items, [sec, param]]);
         setSec("");
+        console.log("items din handleClick: ", items);
       }
     }
   };
@@ -178,6 +179,7 @@ const Task = (props) => {
       console.log(`Ai mers "${name}" in ${sec} sec.`);
 
       items.shift();
+      console.log("items din Start: ", items);
       if (items.length >= 0) {
         setItems(items);
       } else {
