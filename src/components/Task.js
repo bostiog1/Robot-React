@@ -19,6 +19,7 @@ const Task = (props) => {
   const [random, setRandom] = useState({ top: x, left: y });
 
   const previousInputValue = useRef("");
+  const stateRef = useRef("");
 
   const finish = useRef(false);
   // const arr = useRef(items);
@@ -43,7 +44,7 @@ const Task = (props) => {
         // setItems([...items, [sec, param]]);
         setItems((prevItems) => [...prevItems, [sec, param]]);
         setSec("");
-        console.log("items din handleClick: ", items);
+        // console.log("items din handleClick: ", items);
       }
     }
   };
@@ -142,6 +143,10 @@ const Task = (props) => {
     };
   }, []);
 
+  useEffect(() => {
+    stateRef.current = items;
+  }, [items]);
+
   // asyncron
   const wait = (sec) => {
     return new Promise((resolve) => {
@@ -170,20 +175,21 @@ const Task = (props) => {
     }
   };
 
-  const handleStart = async function main() {
-    while (items.length > 0) {
-      const sec = items[0][0];
-      const name = items[0][1];
+  const handleStart = async function () {
+    while (stateRef.current.length > 0) {
+      const sec = stateRef.current[0][0];
+      const name = stateRef.current[0][1];
+      console.log("item: ", stateRef.current[0]);
 
       await wait(sec);
       find(name);
 
       // console.log(`Ai mers "${name}" in ${sec} sec.`);
 
-      items.shift();
-      console.log("items din Start: ", items);
-      if (items.length >= 0) {
-        setItems(items);
+      stateRef.current.shift();
+      // console.log("items din Start: ", items, stateRef.current);
+      if (stateRef.current.length >= 0) {
+        setItems(stateRef.current);
       } else {
         setItems("");
       }
