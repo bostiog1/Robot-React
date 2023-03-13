@@ -21,6 +21,7 @@ const Task = (props) => {
   const previousInputValue = useRef("");
 
   const finish = useRef(false);
+  // const arr = useRef(items);
 
   const messageOutput = (text) => {
     setMessage(`Interzis!! ✋⛔ Ai atins limita din ${text}!`);
@@ -29,7 +30,7 @@ const Task = (props) => {
     setSec(event.target.value);
   };
 
-  const handleClick = (param) => () => {    
+  const handleClick = (param) => () => {
     if (!finish.current) {
       if (sec === undefined || sec === "" || sec === null) {
         setMessage('"Nu ai pus durata!! 😡');
@@ -39,7 +40,8 @@ const Task = (props) => {
         // setItems = [1,'stanga']
         // sec = 2 | param = 'dreapta' | items = [1,'stanga'] | setItems = [...items,[sec,param]] |
         // setItems = [[1,'stanga'], [2,'dreapta']]
-        setItems([...items, [sec, param]]);
+        // setItems([...items, [sec, param]]);
+        setItems((prevItems) => [...prevItems, [sec, param]]);
         setSec("");
         console.log("items din handleClick: ", items);
       }
@@ -176,7 +178,7 @@ const Task = (props) => {
       await wait(sec);
       find(name);
 
-      console.log(`Ai mers "${name}" in ${sec} sec.`);
+      // console.log(`Ai mers "${name}" in ${sec} sec.`);
 
       items.shift();
       console.log("items din Start: ", items);

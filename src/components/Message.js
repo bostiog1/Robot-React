@@ -13,7 +13,7 @@ const Message = ({ message, finish }) => {
         <div className="wrong1">{message}</div>
         <button
           className="refresh"
-          style={{ display: "block", marginLeft: 860 }}
+          style={{ display: "inline-block" }}
           onClick={refreshPage}
         >
           Go again! ✨
