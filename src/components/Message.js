@@ -1,12 +1,26 @@
 import "./Message.css";
 
-const Message = ({ message, finish }) => {
+const Message = ({ message, finish, endGame }) => {
   // console.log("finish: ", finish);
   function refreshPage() {
     window.location.reload(false);
   }
+
   if (!finish) {
-    return <div className="wrong1">{message}</div>;
+    return (
+      <>
+        <div className="wrong1">{message}</div>
+        {endGame === true && (
+          <button
+            className="refresh"
+            style={{ display: "inline-block" }}
+            onClick={refreshPage}
+          >-
+            Go again! ✨
+          </button>
+        )}
+      </>
+    );
   } else {
     return (
       <>

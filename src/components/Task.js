@@ -22,10 +22,10 @@ const Task = (props) => {
   const stateRef = useRef("");
 
   const finish = useRef(false);
-  // const arr = useRef(items);
+  const endGame = useRef(false);
 
   const messageOutput = (text) => {
-    setMessage(`Interzis!! ✋⛔ Ai atins limita din ${text}!`);
+    setMessage(`Ai pierdut... ✋⛔ Ai atins limita din ${text}!`);
   };
   const handleInputChange = (event) => {
     setSec(event.target.value);
@@ -61,78 +61,88 @@ const Task = (props) => {
     }
   };
 
-  const gameOver = () => {
+  const youWon = () => {
     if (robot.left === random.top && robot.top === random.left + robotWidth) {
       setMessage("Felicitari!! 🎉🎉 Ai ajuns la destinatie 🏜 ");
       finish.current = true;
     }
   };
+  // const youLost = () => {
+  //   if (endGame.current === true) {
+  //     console.log("s-a termiant");
+  //   }
+  // };
 
   useEffect(() => {
-    gameOver();
-
+    youWon();
+    // youLost();
     // console.log("finish din useEfect: ", finish);
 
     previousInputValue.current = robot;
   }, [robot]);
 
   const handleKeyDown = (event) => {
-    if (!finish.current) {
-      // console.log("finish din handleKeyDown: ", finish);
-      switch (event.code) {
-        case "ArrowLeft":
-          if (Number(previousInputValue.current.left) > 0) {
-            // debugger;
-            setRobot((prevPosition) => ({
-              ...prevPosition,
-              left: Number(prevPosition.left) - robotWidth,
-            }));
-            setMessage("");
-          } else {
-            messageOutput("stanga");
-          }
-          break;
-        case "ArrowUp":
-          if (Number(previousInputValue.current.top) > 0) {
-            setRobot((prevPosition) => ({
-              ...prevPosition,
-              top: Number(prevPosition.top) - robotWidth,
-            }));
-            setMessage("");
-          } else {
-            messageOutput("sus");
-          }
-          break;
-        case "ArrowRight":
-          if (
-            Number(previousInputValue.current.left) <
-            boardWidth - robotWidth
-          ) {
-            setRobot((prevPosition) => ({
-              ...prevPosition,
-              left: Number(prevPosition.left) + robotWidth,
-            }));
-            setMessage("");
-          } else {
-            messageOutput("dreapta");
-          }
-          break;
-        case "ArrowDown":
-          if (
-            Number(previousInputValue.current.top) <
-            boardHeight - robotWidth
-          ) {
-            setRobot((prevPosition) => ({
-              ...prevPosition,
-              top: Number(prevPosition.top) + Number(30),
-            }));
-            setMessage("");
-          } else {
-            messageOutput("jos");
-          }
-          break;
+    if (!finish.current)
+      if (!endGame.current) {
+        // console.log("finish din handleKeyDown: ", finish);
+        switch (event.code) {
+          case "ArrowLeft":
+            if (Number(previousInputValue.current.left) > 0) {
+              // debugger;
+              setRobot((prevPosition) => ({
+                ...prevPosition,
+                left: Number(prevPosition.left) - robotWidth,
+              }));
+              setMessage("");
+            } else {
+              endGame.current = true;
+              messageOutput("stanga");
+            }
+            break;
+          case "ArrowUp":
+            if (Number(previousInputValue.current.top) > 0) {
+              setRobot((prevPosition) => ({
+                ...prevPosition,
+                top: Number(prevPosition.top) - robotWidth,
+              }));
+              setMessage("");
+            } else {
+              endGame.current = true;
+              messageOutput("sus");
+            }
+            break;
+          case "ArrowRight":
+            if (
+              Number(previousInputValue.current.left) <
+              boardWidth - robotWidth
+            ) {
+              setRobot((prevPosition) => ({
+                ...prevPosition,
+                left: Number(prevPosition.left) + robotWidth,
+              }));
+              setMessage("");
+            } else {
+              endGame.current = true;
+              messageOutput("dreapta");
+            }
+            break;
+          case "ArrowDown":
+            if (
+              Number(previousInputValue.current.top) <
+              boardHeight - robotWidth
+            ) {
+              setRobot((prevPosition) => ({
+                ...prevPosition,
+                top: Number(prevPosition.top) + Number(30),
+              }));
+              setMessage("");
+            } else {
+              endGame.current = true;
+              messageOutput("jos");
+            }
+            break;
+        }
       }
-    }
   };
 
   useEffect(() => {
@@ -179,12 +189,9 @@ const Task = (props) => {
     while (stateRef.current.length > 0) {
       const sec = stateRef.current[0][0];
       const name = stateRef.current[0][1];
-      console.log("item: ", stateRef.current[0]);
 
       await wait(sec);
       find(name);
-
-      // console.log(`Ai mers "${name}" in ${sec} sec.`);
 
       stateRef.current.shift();
       // console.log("items din Start: ", items, stateRef.current);
@@ -242,7 +249,11 @@ const Task = (props) => {
         <Grid robot={robot} random={random} />
       </div>
       {/* <div className="wrong1">{message}</div> */}
-      <Message message={message} finish={finish.current} />
+      <Message
+        message={message}
+        finish={finish.current}
+        endGame={endGame.current}
+      />
     </div>
   );
 };
