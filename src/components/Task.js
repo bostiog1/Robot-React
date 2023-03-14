@@ -19,7 +19,7 @@ const Task = (props) => {
   const [random, setRandom] = useState({ top: x, left: y });
 
   const [points, setPoints] = useState(0);
-  const [seconds, setSeconds] = useState(60);
+  const [seconds, setSeconds] = useState(15);
 
   const previousInputValue = useRef("");
   const stateRef = useRef("");
@@ -69,11 +69,8 @@ const Task = (props) => {
 
   const youWon = () => {
     if (robot.left === random.top && robot.top === random.left + robotWidth) {
-      // setMessage("Felicitari!! 🎉🎉 Ai ajuns la destinatie 🏜 ");
       setRandom({ top: x, left: y });
       setPoints(points + 1);
-
-      // finish.current = true;
     }
   };
 
@@ -84,6 +81,12 @@ const Task = (props) => {
         setSeconds((prevSec) => prevSec - 1);
         secondsRef.current = secondsRef.current - 1;
       }
+
+      if (secondsRef.current === 0) {
+        timeIsUp.current = true;
+        setMessage(`Timpul s-a terminat! ⏱  🏁`);
+      }
+
       if (secondsRef.current === 0) {
         setSeconds(secondsRef.current);
         clearInterval(interval);
@@ -112,7 +115,6 @@ const Task = (props) => {
   const handleKeyDown = (event) => {
     if (!timeIsUp.current)
       if (!endGame.current) {
-        // console.log("finish din handleKeyDown: ", finish);
         switch (event.code) {
           case "ArrowLeft":
             if (Number(previousInputValue.current.left) > 0) {
@@ -269,6 +271,9 @@ const Task = (props) => {
           </div>
         )}
         <div>Scor: {points}</div>
+        <div style={{ padding: 10 }}>
+          Ai facut {points} puncte in 15 de secunde 🏁
+        </div>
       </div>
       <div className="row">
         <Output items={items} />
@@ -279,6 +284,7 @@ const Task = (props) => {
         message={message}
         finish={finish.current}
         endGame={endGame.current}
+        points={points}
       />
     </div>
   );
