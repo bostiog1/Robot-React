@@ -11,7 +11,7 @@ const cfg = () => {
   let y =
     Math.trunc(Math.round(Math.random() * (boardWidth - 30)) / distance) * 30;
 
-  const randomPosition = [x, y];
+  let randomPosition = [x, y];
 
   return { randomPosition, boardHeight, boardWidth, robotWidth };
 };
