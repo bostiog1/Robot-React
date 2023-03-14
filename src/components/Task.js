@@ -19,12 +19,15 @@ const Task = (props) => {
   const [random, setRandom] = useState({ top: x, left: y });
 
   const [points, setPoints] = useState(0);
+  const [seconds, setSeconds] = useState(60);
 
   const previousInputValue = useRef("");
   const stateRef = useRef("");
 
   const finish = useRef(false);
   const endGame = useRef(false);
+  const timeIsUp = useRef(false);
+  const secondsRef = useRef(seconds);
 
   const messageOutput = (text) => {
     setMessage(`Ai pierdut... ✋⛔ Ai atins limita din ${text}!`);
@@ -34,22 +37,22 @@ const Task = (props) => {
   };
 
   const handleClick = (param) => () => {
-    // if (!finish.current)
-    if (!endGame.current) {
-      if (sec === undefined || sec === "" || sec === null) {
-        setMessage('"Nu ai pus durata!! 😡');
-      } else {
-        setMessage("");
-        // sec = 1 | param = 'stanga' | items = [] | setItems = [...items,[sec,param]] |
-        // setItems = [1,'stanga']
-        // sec = 2 | param = 'dreapta' | items = [1,'stanga'] | setItems = [...items,[sec,param]] |
-        // setItems = [[1,'stanga'], [2,'dreapta']]
-        // setItems([...items, [sec, param]]);
-        setItems((prevItems) => [...prevItems, [sec, param]]);
-        setSec("");
-        // console.log("items din handleClick: ", items);
+    if (!timeIsUp.current)
+      if (!endGame.current) {
+        if (sec === undefined || sec === "" || sec === null) {
+          setMessage('"Nu ai pus durata!! 😡');
+        } else {
+          setMessage("");
+          // sec = 1 | param = 'stanga' | items = [] | setItems = [...items,[sec,param]] |
+          // setItems = [1,'stanga']
+          // sec = 2 | param = 'dreapta' | items = [1,'stanga'] | setItems = [...items,[sec,param]] |
+          // setItems = [[1,'stanga'], [2,'dreapta']]
+          // setItems([...items, [sec, param]]);
+          setItems((prevItems) => [...prevItems, [sec, param]]);
+          setSec("");
+          // console.log("items din handleClick: ", items);
+        }
       }
-    }
   };
 
   const handleDelete = () => {
@@ -70,94 +73,33 @@ const Task = (props) => {
       setRandom({ top: x, left: y });
       setPoints(points + 1);
 
-      finish.current = true;
+      // finish.current = true;
     }
   };
-  // const youLost = () => {
-  //   if (endGame.current === true) {
-  //     console.log("s-a termiant");
-  //   }
-  // };
 
+  // UseEffects
   useEffect(() => {
-    // console.log("finish din use efect: ", finish.current);
-    finish.current = false;
-    // console.log("points: ", points / 2);
-  }, [finish.current]);
+    const interval = setInterval(() => {
+      if (secondsRef.current > 0 && !endGame.current) {
+        setSeconds((prevSec) => prevSec - 1);
+        secondsRef.current = secondsRef.current - 1;
+      }
+      if (secondsRef.current === 0) {
+        setSeconds(secondsRef.current);
+        clearInterval(interval);
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     youWon();
-    // youLost();
-    // console.log("finish din useEfect: ", finish);
     previousInputValue.current = robot;
   }, [robot]);
 
-  const handleKeyDown = (event) => {
-    // if (!finish.current)
-    if (!endGame.current) {
-      // console.log("finish din handleKeyDown: ", finish);
-      switch (event.code) {
-        case "ArrowLeft":
-          if (Number(previousInputValue.current.left) > 0) {
-            // debugger;
-            setRobot((prevPosition) => ({
-              ...prevPosition,
-              left: Number(prevPosition.left) - robotWidth,
-            }));
-            setMessage("");
-          } else {
-            endGame.current = true;
-            messageOutput("stanga");
-          }
-          break;
-        case "ArrowUp":
-          if (Number(previousInputValue.current.top) > 0) {
-            setRobot((prevPosition) => ({
-              ...prevPosition,
-              top: Number(prevPosition.top) - robotWidth,
-            }));
-            setMessage("");
-          } else {
-            endGame.current = true;
-            messageOutput("sus");
-          }
-          break;
-        case "ArrowRight":
-          if (
-            Number(previousInputValue.current.left) <
-            boardWidth - robotWidth
-          ) {
-            setRobot((prevPosition) => ({
-              ...prevPosition,
-              left: Number(prevPosition.left) + robotWidth,
-            }));
-            setMessage("");
-          } else {
-            endGame.current = true;
-            messageOutput("dreapta");
-          }
-          break;
-        case "ArrowDown":
-          if (
-            Number(previousInputValue.current.top) <
-            boardHeight - robotWidth
-          ) {
-            setRobot((prevPosition) => ({
-              ...prevPosition,
-              top: Number(prevPosition.top) + Number(30),
-            }));
-            setMessage("");
-          } else {
-            endGame.current = true;
-            messageOutput("jos");
-          }
-          break;
-      }
-    } else {
-      // setRandom(random);
-      // finish.current = false;
-    }
-  };
+  useEffect(() => {
+    stateRef.current = items;
+  }, [items]);
 
   useEffect(() => {
     document.addEventListener("keydown", handleKeyDown);
@@ -167,9 +109,69 @@ const Task = (props) => {
     };
   }, []);
 
-  useEffect(() => {
-    stateRef.current = items;
-  }, [items]);
+  const handleKeyDown = (event) => {
+    if (!timeIsUp.current)
+      if (!endGame.current) {
+        // console.log("finish din handleKeyDown: ", finish);
+        switch (event.code) {
+          case "ArrowLeft":
+            if (Number(previousInputValue.current.left) > 0) {
+              // debugger;
+              setRobot((prevPosition) => ({
+                ...prevPosition,
+                left: Number(prevPosition.left) - robotWidth,
+              }));
+              setMessage("");
+            } else {
+              endGame.current = true;
+              messageOutput("stanga");
+            }
+            break;
+          case "ArrowUp":
+            if (Number(previousInputValue.current.top) > 0) {
+              setRobot((prevPosition) => ({
+                ...prevPosition,
+                top: Number(prevPosition.top) - robotWidth,
+              }));
+              setMessage("");
+            } else {
+              endGame.current = true;
+              messageOutput("sus");
+            }
+            break;
+          case "ArrowRight":
+            if (
+              Number(previousInputValue.current.left) <
+              boardWidth - robotWidth
+            ) {
+              setRobot((prevPosition) => ({
+                ...prevPosition,
+                left: Number(prevPosition.left) + robotWidth,
+              }));
+              setMessage("");
+            } else {
+              endGame.current = true;
+              messageOutput("dreapta");
+            }
+            break;
+          case "ArrowDown":
+            if (
+              Number(previousInputValue.current.top) <
+              boardHeight - robotWidth
+            ) {
+              setRobot((prevPosition) => ({
+                ...prevPosition,
+                top: Number(prevPosition.top) + Number(30),
+              }));
+              setMessage("");
+            } else {
+              endGame.current = true;
+              messageOutput("jos");
+            }
+            break;
+        }
+      }
+  };
 
   // asyncron
   const wait = (sec) => {
@@ -258,8 +260,16 @@ const Task = (props) => {
           Start
         </button>
       </div>
-      <div className="wrong1"> Score: {points} </div>
-
+      <div className="wrong1">
+        {!endGame.current ? (
+          <div style={{ padding: 10 }}>Mai ai {seconds} secunde ramase...</div>
+        ) : (
+          <div style={{ padding: 10 }}>
+            Ai calcat gresit... mai aveai {seconds} secunde ramase...
+          </div>
+        )}
+        <div>Scor: {points}</div>
+      </div>
       <div className="row">
         <Output items={items} />
         <Grid robot={robot} random={random} />
