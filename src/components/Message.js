@@ -1,7 +1,6 @@
 import "./Message.css";
 
-const Message = ({ message, finish, endGame, points }) => {
-  // console.log("finish: ", finish);
+const Message = ({ message, endGame, points }) => {
   function refreshPage() {
     window.location.reload(false);
   }

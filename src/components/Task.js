@@ -21,7 +21,6 @@ const Task = (props) => {
 
   const previousInputValue = useRef("");
 
-  const finish = useRef(false);
   const endGame = useRef(false);
   const timeIsUp = useRef(false);
   const secondsRef = useRef(seconds);
@@ -150,11 +149,7 @@ const Task = (props) => {
       <h1 className="title">Task Manager</h1>
       <br />
       Task:
-      <button
-        className="left"
-        onClick={handleClick("stanga")}
-        // onKeyDown={handleKeyDown}
-      >
+      <button className="left" onClick={handleClick("stanga")}>
         Left
       </button>
       <button className="top" onClick={handleClick("sus")}>
@@ -182,12 +177,7 @@ const Task = (props) => {
       <div className="row">
         <Grid robot={robot} random={random} coords={coords} />
       </div>
-      <Message
-        message={message}
-        finish={finish.current}
-        endGame={endGame.current}
-        points={points}
-      />
+      <Message message={message} endGame={endGame.current} points={points} />
     </div>
   );
 };
