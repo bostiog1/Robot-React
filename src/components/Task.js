@@ -3,26 +3,23 @@ import Output from "./Output";
 import Grid from "./Grid";
 import { cfg } from "../config";
 import Message from "./Message";
-
 import "./Task.css";
 
 const Task = (props) => {
   const { randomPosition, boardHeight, boardWidth, robotWidth } = cfg();
   let [y, x] = randomPosition;
 
-  const [remove, setRemove] = useState("");
   const [message, setMessage] = useState("");
-  const [items, setItems] = useState([]);
-  const [sec, setSec] = useState();
 
   const [robot, setRobot] = useState({ top: "120", left: "240" });
+  const [coords, setCoords] = useState([robot]);
+
   const [random, setRandom] = useState({ top: x, left: y });
 
   const [points, setPoints] = useState(0);
-  const [seconds, setSeconds] = useState(15);
+  const [seconds, setSeconds] = useState(600);
 
   const previousInputValue = useRef("");
-  const stateRef = useRef("");
 
   const finish = useRef(false);
   const endGame = useRef(false);
@@ -32,45 +29,21 @@ const Task = (props) => {
   const messageOutput = (text) => {
     setMessage(`Ai pierdut... ✋⛔ Ai atins limita din ${text}!`);
   };
-  const handleInputChange = (event) => {
-    setSec(event.target.value);
-  };
 
-  const handleClick = (param) => () => {
-    if (!timeIsUp.current)
-      if (!endGame.current) {
-        if (sec === undefined || sec === "" || sec === null) {
-          setMessage('"Nu ai pus durata!! 😡');
-        } else {
-          setMessage("");
-          // sec = 1 | param = 'stanga' | items = [] | setItems = [...items,[sec,param]] |
-          // setItems = [1,'stanga']
-          // sec = 2 | param = 'dreapta' | items = [1,'stanga'] | setItems = [...items,[sec,param]] |
-          // setItems = [[1,'stanga'], [2,'dreapta']]
-          // setItems([...items, [sec, param]]);
-          setItems((prevItems) => [...prevItems, [sec, param]]);
-          setSec("");
-          // console.log("items din handleClick: ", items);
-        }
-      }
-  };
+  const handleClick = () => {};
 
-  const handleDelete = () => {
-    if (items.length === 0) {
-      setRemove("");
-      setItems([]);
-    } else {
-      // Am creat o copie a array-ului items, am sters primul element si dupa am afisat
-      const newItems = [...items];
-      newItems.shift();
-      setItems(newItems);
-    }
-  };
-
-  const youWon = () => {
+  const youAte = () => {
     if (robot.left === random.top && robot.top === random.left + robotWidth) {
+      setRobot((prevPosition) => ({
+        ...prevPosition,
+        left: robot.left,
+        top: robot.top,
+      }));
       setRandom({ top: x, left: y });
       setPoints(points + 1);
+      setCoords([...coords, robot]);
+
+      console.log("block:", coords);
     }
   };
 
@@ -96,13 +69,9 @@ const Task = (props) => {
   }, []);
 
   useEffect(() => {
-    youWon();
+    youAte();
     previousInputValue.current = robot;
   }, [robot]);
-
-  useEffect(() => {
-    stateRef.current = items;
-  }, [items]);
 
   useEffect(() => {
     document.addEventListener("keydown", handleKeyDown);
@@ -175,66 +144,10 @@ const Task = (props) => {
       }
   };
 
-  // asyncron
-  const wait = (sec) => {
-    return new Promise((resolve) => {
-      setTimeout(resolve, sec * 1000);
-    });
-  };
-
-  const find = (text) => {
-    switch (text) {
-      case "stanga": {
-        handleKeyDown({ code: "ArrowLeft" });
-        break;
-      }
-      case "sus": {
-        handleKeyDown({ code: "ArrowUp" });
-        break;
-      }
-      case "dreapta": {
-        handleKeyDown({ code: "ArrowRight" });
-        break;
-      }
-      case "jos": {
-        handleKeyDown({ code: "ArrowDown" });
-        break;
-      }
-    }
-  };
-
-  const handleStart = async function () {
-    while (stateRef.current.length > 0) {
-      const sec = stateRef.current[0][0];
-      const name = stateRef.current[0][1];
-
-      await wait(sec);
-      find(name);
-
-      stateRef.current.shift();
-      // console.log("items din Start: ", items, stateRef.current);
-      if (stateRef.current.length >= 0) {
-        setItems(stateRef.current);
-      } else {
-        setItems("");
-      }
-    }
-  };
-
   return (
     <div className="container">
-      <h1 className="title">Robot - React</h1>
+      <h1 className="title">Robot - Snake - React</h1>
       <h1 className="title">Task Manager</h1>
-      <div className="durata">
-        Durata:
-        <input
-          className="sec"
-          type="number"
-          // seteaza valoarea inputului la 'sec' daca nu este null sau undefined
-          value={sec || ""}
-          onChange={handleInputChange}
-        />
-      </div>
       <br />
       Task:
       <button
@@ -253,15 +166,6 @@ const Task = (props) => {
       <button className="bottom" onClick={handleClick("jos")}>
         Bottom
       </button>
-      <div>
-        <div className="add"></div>
-        <button className="delete" onClick={handleDelete}>
-          Sterge
-        </button>
-        <button className="start" onClick={handleStart}>
-          Start
-        </button>
-      </div>
       <div className="wrong1">
         {!endGame.current ? (
           <div style={{ padding: 10 }}>Mai ai {seconds} secunde ramase...</div>
@@ -276,10 +180,8 @@ const Task = (props) => {
         </div>
       </div>
       <div className="row">
-        <Output items={items} />
-        <Grid robot={robot} random={random} />
+        <Grid robot={robot} random={random} coords={coords} />
       </div>
-      {/* <div className="wrong1">{message}</div> */}
       <Message
         message={message}
         finish={finish.current}
