@@ -1,14 +1,25 @@
 import "./Grid.css";
-import { useState } from "react";
-import cfg from "../config";
 
 const Grid = ({ robot, random, coords }) => {
+  // console.log('coords din grid: ',coords)
   return (
     <div className="grid">
       <div
         className="robot"
         style={{ top: `${robot.top}px`, left: `${robot.left}px` }}
       ></div>
+      {coords.length > 1 &&
+        coords.map((item, index) => (
+          <div
+            className="robot"
+            key={index}
+            style={{ top: `${item.top}px`, left: `${item.left}px` }}
+          ></div>
+        ))}
+      {/* <div
+        className="robot"
+        style={{ top: `${coords}px`, left: `${coords}px` }}
+      ></div> */}
       <div
         className="random"
         style={{ top: `${random.left}px`, left: `${random.top}px` }}

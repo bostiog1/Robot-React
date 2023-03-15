@@ -43,7 +43,7 @@ const Task = (props) => {
       setPoints(points + 1);
       setCoords([...coords, robot]);
 
-      console.log("block:", coords);
+      console.log("coords:", coords);
     }
   };
 
