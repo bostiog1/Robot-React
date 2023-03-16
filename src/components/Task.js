@@ -11,7 +11,7 @@ const Task = (props) => {
 
   const [message, setMessage] = useState("");
 
-  const [robot, setRobot] = useState([{ top: "120", left: "240" }]);
+  const [robot, setRobot] = useState(["120", "240"]); // prima e top, a doua left
   const [coords, setCoords] = useState([robot]);
 
   const [random, setRandom] = useState({ top: x, left: y });
@@ -29,20 +29,50 @@ const Task = (props) => {
     setMessage(`Ai pierdut... ✋⛔ Ai atins limita din ${text}!`);
   };
 
+  // UseEffects
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (secondsRef.current > 0 && !endGame.current) {
+        setSeconds((prevSec) => prevSec - 1);
+        secondsRef.current = secondsRef.current - 1;
+      }
+
+      if (secondsRef.current === 0) {
+        timeIsUp.current = true;
+        setMessage(`Timpul s-a terminat! ⏱  🏁`);
+      }
+
+      if (secondsRef.current === 0) {
+        setSeconds(secondsRef.current);
+        clearInterval(interval);
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    youAte();
+    previousInputValue.current = robot;
+  }, [robot]);
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   const handleKeyDown = (event) => {
     if (!timeIsUp.current)
       if (!endGame.current) {
         switch (event.code) {
           case "ArrowLeft":
-            if (Number(previousInputValue.current.left) > 0) {
-              // debugger;
-              setRobot((prevPosition) => [
-                {
-                  ...prevPosition,
-                  left: Number(prevPosition.left) - robotWidth,
-                },
-              ]);
+            if (Number(previousInputValue.current[1]) > 0) {
+              // console.log("prev left: ", previousInputValue.current),
+              setRobot([robot[0], [Number(robot[1]) - robotWidth]]);
               setMessage("");
+              console.log(previousInputValue.current);
             } else {
               endGame.current = true;
               messageOutput("stanga");
@@ -116,40 +146,6 @@ const Task = (props) => {
       console.log("coords:", coords);
     }
   };
-
-  // UseEffects
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (secondsRef.current > 0 && !endGame.current) {
-        setSeconds((prevSec) => prevSec - 1);
-        secondsRef.current = secondsRef.current - 1;
-      }
-
-      if (secondsRef.current === 0) {
-        timeIsUp.current = true;
-        setMessage(`Timpul s-a terminat! ⏱  🏁`);
-      }
-
-      if (secondsRef.current === 0) {
-        setSeconds(secondsRef.current);
-        clearInterval(interval);
-      }
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    youAte();
-    previousInputValue.current = robot;
-  }, [robot]);
-
-  useEffect(() => {
-    document.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
 
   return (
     <div className="container">

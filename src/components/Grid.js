@@ -6,7 +6,7 @@ const Grid = ({ robot, random, coords }) => {
     <div className="grid">
       <div
         className="robot"
-        style={{ top: `${robot.top}px`, left: `${robot.left}px` }}
+        style={{ top: `${robot[0]}px`, left: `${robot[1]}px` }}
       ></div>
       {coords.length > 1 &&
         coords.map((item, index) => (
