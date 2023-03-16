@@ -11,7 +11,7 @@ const Task = (props) => {
 
   const [message, setMessage] = useState("");
 
-  const [robot, setRobot] = useState({ top: "120", left: "240" });
+  const [robot, setRobot] = useState([{ top: "120", left: "240" }]);
   const [coords, setCoords] = useState([robot]);
 
   const [random, setRandom] = useState({ top: x, left: y });
@@ -27,6 +27,77 @@ const Task = (props) => {
 
   const messageOutput = (text) => {
     setMessage(`Ai pierdut... ✋⛔ Ai atins limita din ${text}!`);
+  };
+
+  const handleKeyDown = (event) => {
+    if (!timeIsUp.current)
+      if (!endGame.current) {
+        switch (event.code) {
+          case "ArrowLeft":
+            if (Number(previousInputValue.current.left) > 0) {
+              // debugger;
+              setRobot((prevPosition) => [
+                {
+                  ...prevPosition,
+                  left: Number(prevPosition.left) - robotWidth,
+                },
+              ]);
+              setMessage("");
+            } else {
+              endGame.current = true;
+              messageOutput("stanga");
+            }
+            break;
+          case "ArrowUp":
+            if (Number(previousInputValue.current.top) > 0) {
+              setRobot((prevPosition) => [
+                {
+                  ...prevPosition,
+                  top: Number(prevPosition.top) - robotWidth,
+                },
+              ]);
+              setMessage("");
+            } else {
+              endGame.current = true;
+              messageOutput("sus");
+            }
+            break;
+          case "ArrowRight":
+            if (
+              Number(previousInputValue.current.left) <
+              boardWidth - robotWidth
+            ) {
+              setRobot((prevPosition) => [
+                {
+                  ...prevPosition,
+                  left: Number(prevPosition.left) + robotWidth,
+                },
+              ]);
+              setMessage("");
+            } else {
+              endGame.current = true;
+              messageOutput("dreapta");
+            }
+            break;
+          case "ArrowDown":
+            if (
+              Number(previousInputValue.current.top) <
+              boardHeight - robotWidth
+            ) {
+              setRobot((prevPosition) => [
+                {
+                  ...prevPosition,
+                  top: Number(prevPosition.top) + Number(30),
+                },
+              ]);
+              setMessage("");
+            } else {
+              endGame.current = true;
+              messageOutput("jos");
+            }
+            break;
+        }
+      }
   };
 
   const handleClick = () => {};
@@ -79,69 +150,6 @@ const Task = (props) => {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
-
-  const handleKeyDown = (event) => {
-    if (!timeIsUp.current)
-      if (!endGame.current) {
-        switch (event.code) {
-          case "ArrowLeft":
-            if (Number(previousInputValue.current.left) > 0) {
-              // debugger;
-              setRobot((prevPosition) => ({
-                ...prevPosition,
-                left: Number(prevPosition.left) - robotWidth,
-              }));
-              setMessage("");
-            } else {
-              endGame.current = true;
-              messageOutput("stanga");
-            }
-            break;
-          case "ArrowUp":
-            if (Number(previousInputValue.current.top) > 0) {
-              setRobot((prevPosition) => ({
-                ...prevPosition,
-                top: Number(prevPosition.top) - robotWidth,
-              }));
-              setMessage("");
-            } else {
-              endGame.current = true;
-              messageOutput("sus");
-            }
-            break;
-          case "ArrowRight":
-            if (
-              Number(previousInputValue.current.left) <
-              boardWidth - robotWidth
-            ) {
-              setRobot((prevPosition) => ({
-                ...prevPosition,
-                left: Number(prevPosition.left) + robotWidth,
-              }));
-              setMessage("");
-            } else {
-              endGame.current = true;
-              messageOutput("dreapta");
-            }
-            break;
-          case "ArrowDown":
-            if (
-              Number(previousInputValue.current.top) <
-              boardHeight - robotWidth
-            ) {
-              setRobot((prevPosition) => ({
-                ...prevPosition,
-                top: Number(prevPosition.top) + Number(30),
-              }));
-              setMessage("");
-            } else {
-              endGame.current = true;
-              messageOutput("jos");
-            }
-            break;
-        }
-      }
-  };
 
   return (
     <div className="container">

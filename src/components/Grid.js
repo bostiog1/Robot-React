@@ -8,14 +8,14 @@ const Grid = ({ robot, random, coords }) => {
         className="robot"
         style={{ top: `${robot.top}px`, left: `${robot.left}px` }}
       ></div>
-      {/* {coords.length > 1 &&
+      {coords.length > 1 &&
         coords.map((item, index) => (
           <div
             className="robot"
             key={index}
             style={{ top: `${item.top}px`, left: `${item.left}px` }}
           ></div>
-        ))} */}
+        ))}
 
       <div
         className="random"
