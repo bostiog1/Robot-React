@@ -1,5 +1,5 @@
 // Custom Hook by Dan Abramov
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 export function useInterval(callback, delay) {
   const savedCallback = useRef();

@@ -60,7 +60,7 @@ const App = () => {
   const gameLoop = () => {
     const snakeCopy = JSON.parse(JSON.stringify(snake));
     const newSnakeHead = [snakeCopy[0][0] + dir[0], snakeCopy[0][1] + dir[1]];
-    console.log(snakeCopy)
+    console.log(snakeCopy);
     snakeCopy.unshift(newSnakeHead);
     if (checkCollision(newSnakeHead)) endGame();
     if (!checkAppleCollision(snakeCopy)) snakeCopy.pop();
@@ -77,16 +77,16 @@ const App = () => {
 
   useEffect(() => {
     const context = canvasRef.current.getContext("2d");
-  context.setTransform(SCALE, 0, 0, SCALE, 0, 0);
-  context.clearRect(0, 0, window.innerWidth, window.innerHeight);
-  
-  // add a transition style to the canvas element
-  canvasRef.current.style.transition = "transform 0.5s ease-in-out";
+    context.setTransform(SCALE, 0, 0, SCALE, 0, 0);
+    context.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
-  context.fillStyle = "pink";
-  snake.forEach(([x, y]) => context.fillRect(x, y, 1, 1));
-  context.fillStyle = "lightblue";
-  context.fillRect(apple[0], apple[1], 1, 1);
+    // add a transition style to the canvas element
+    canvasRef.current.style.transition = "transform 0.5s ease-in-out";
+
+    context.fillStyle = "pink";
+    snake.forEach(([x, y]) => context.fillRect(x, y, 1, 1));
+    context.fillStyle = "lightblue";
+    context.fillRect(apple[0], apple[1], 1, 1);
   }, [snake, apple, gameOver]);
 
   return (
