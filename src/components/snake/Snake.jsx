@@ -10,6 +10,7 @@ import {
 } from "./constants";
 
 const App = () => {
+  console.log()
   const canvasRef = useRef();
   const [snake, setSnake] = useState(SNAKE_START);
   const [apple, setApple] = useState(APPLE_START);
